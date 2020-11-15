@@ -1,0 +1,161 @@
+<html>
+<head>
+    <title>입력을 받는 공 튀기기</title>
+    <style>
+    form {
+    width:330px;
+    margin:20px;
+    background-color:brown;
+    padding:20px;
+    }
+    #canvas {
+        background-color: gray;
+        display: block;
+        border-style: solid;
+        border-width: 15px;
+    }
+    </style>
+    <canvas id="canvas" width="480" height="320"></canvas>
+
+    <script type="text/javascript">
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    var ballRadius = 10;
+    var x = canvas.width/2;
+    var y = canvas.height-30;
+    var dx = 2;
+    var dy = -2;
+    var paddleHeight = 10;
+    var paddleWidth = 75;
+    var paddleX = (canvas.width-paddleWidth)/2;
+    var paddleY = (canvas.width-paddleWidth)/2;
+    var rightPressed = false;
+    var leftPressed = false;
+    var score = 3;
+    var score2 = 3;
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+    document.addEventListener("mousemove", mouseMoveHandler, false);
+
+    function keyDownHandler(e) { //키를 누를 때
+        if(e.keyCode == 39) { //오른쪽 방향키를 눌렀을 때
+            rightPressed = true;
+        }
+        else if(e.keyCode == 37) { //왼쪽 방향키를 눌렀을 때
+            leftPressed = true;
+        }
+    }
+    function keyUpHandler(e) { //키를 뗄 때
+        if(e.keyCode == 39) { //오른쪽 
+            rightPressed = false;
+        }
+        else if(e.keyCode == 37) { //왼쪽
+            leftPressed = false;
+        }
+    }
+   
+    function mouseMoveHandler(e) {
+        var relativeX = e.clientX - canvas.offsetLeft;
+        if(relativeX > 0 && relativeX < canvas.width) {
+            paddleX = relativeX - paddleWidth/2;
+        }
+    }
+    function drawBall() {
+        ctx.beginPath();
+        ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+        ctx.fillStyle = "rgb(200,0,50)";
+        ctx.fill();
+        ctx.closePath();
+    }
+    function drawPaddle() {
+        ctx.beginPath();
+        ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+        ctx.fillStyle = "rgb(255, 255, 0)";
+        ctx.fill();
+        ctx.closePath();
+    }
+    function drawPaddle2() {
+        ctx.beginPath();
+        ctx.rect(paddleY, 0, paddleWidth, paddleHeight);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+    }
+    function drawScore() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "rgb(200,0,50)";
+        ctx.fillText("남은 목숨: "+score, canvas.width-90, canvas.height-10);
+    }
+    function drawScore2() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "rgb(200,0,50)";
+        ctx.fillText("남은 목숨: "+score2, canvas.width-90, 20);
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBall();
+        drawPaddle();
+        drawPaddle2();
+        drawScore();
+        drawScore2();
+
+        if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+            dx = -dx;
+        }
+        else if(y + dy < ballRadius) {
+            if(x > paddleY && x < paddleY + paddleWidth) {
+            dy = -dy;
+           }
+           else {
+                score2--;
+                if(!score2) {
+                    alert("노랑 Win");
+                    document.location.reload();
+                }
+                else {
+                    x = canvas.width/2;
+                    y = canvas.height-30;
+                    dx = 3;
+                    dy = -3;
+                    paddleX = (canvas.width-paddleWidth)/2;
+                }
+            }
+        }
+        else if(y + dy > canvas.height-ballRadius) {
+            if(x > paddleX && x < paddleX + paddleWidth) {
+                dy = -dy;
+            }
+            else {
+                score--;
+                if(!score) {
+                    alert("파랑 Win");
+                    document.location.reload();
+                }
+                else {
+                    x = canvas.width/2;
+                    y = canvas.height-30;
+                    dx = 3;
+                    dy = -3;
+                    paddleX = (canvas.width-paddleWidth)/2;
+                }
+            }
+        }
+
+        if(rightPressed && paddleY < canvas.width-paddleWidth) {
+            paddleY += 7;
+        }
+        else if(leftPressed && paddleY > 0) {
+            paddleY -= 7;
+        }
+       
+        x += dx;
+        y += dy;
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+</script>
+</head>
+</html>
