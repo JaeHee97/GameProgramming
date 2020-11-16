@@ -3,7 +3,7 @@
     <title>입력을 받는 공 튀기기</title>
     <style>
     form {
-    width:330px;
+    width:110px;
     margin:20px;
     background-color:brown;
     padding:20px;
@@ -100,7 +100,7 @@
         drawPaddle2();
         drawScore();
         drawScore2();
-
+        //좌우 사각형 면에 부딪혔을 때 방향전환
         if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
             dx = -dx;
         }
@@ -158,4 +158,10 @@
     draw();
 </script>
 </head>
+<body>  
+<br/>
+<form>
+<button onClick="window.location.reload()">게임 다시 시작</button>
+</form> 
+</body>
 </html>
